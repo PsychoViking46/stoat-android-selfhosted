@@ -10,6 +10,17 @@
     <br/><br/><br/>
 </div>
 
+> **This is a fork.** The official app only connects to the official stoat.chat cloud service —
+> self-hosted instances aren't supported yet (tracked upstream at
+> [stoatchat/self-hosted#141](https://github.com/stoatchat/self-hosted/issues/141)). This fork
+> adds a **"Connect to a self-hosted server"** option on the login screen: any user can type in
+> their own instance's domain, and the app discovers everything else (API, websocket, file/proxy
+> URLs) at runtime via the standard `.well-known/stoat` discovery convention — no server is
+> hardcoded, no rebuild needed. See
+> [`CustomInstance.kt`](app/src/main/java/chat/stoat/persistence/CustomInstance.kt) for the
+> implementation. Defaults to the official instance until a user opts in. Not affiliated with or
+> endorsed by the Stoat project.
+
 ## Description
 
 The codebase includes the app itself, as well as an internal library for interacting with the Stoat
