@@ -104,6 +104,7 @@ import chat.stoat.screens.chat.standalone.CatchUpScreen
 import chat.stoat.screens.chat.views.channel.ChannelScreen
 import chat.stoat.screens.create.CreateGroupScreen
 import chat.stoat.screens.labs.LabsRootScreen
+import chat.stoat.screens.login.CustomServerScreen
 import chat.stoat.screens.login.LoginGreetingScreen
 import chat.stoat.screens.login.LoginScreen
 import chat.stoat.screens.login.MfaScreen
@@ -599,6 +600,7 @@ fun AppEntrypoint(
 
                     composable("login/greeting") { LoginGreetingScreen(navController) }
                     composable("login/login") { LoginScreen(navController) }
+                    composable("login/customserver") { CustomServerScreen(navController) }
                     composable("login/mfa/{mfaTicket}/{allowedAuthTypes}") { backStackEntry ->
                         val mfaTicket = backStackEntry.arguments?.getString("mfaTicket") ?: ""
                         val allowedAuthTypes =

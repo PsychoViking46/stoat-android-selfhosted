@@ -176,7 +176,20 @@ fun LoginGreetingScreen(navController: NavController) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(10.dp))
+
+            TextButton(
+                onClick = { navController.navigate("login/customserver") },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "Connect to a self-hosted server",
+                    fontSize = 13.sp,
+                    color = LocalContentColor.current.copy(alpha = 0.6f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(30.dp))
 
             CompositionLocalProvider(
                 LocalTextStyle provides LocalTextStyle.current.copy(textAlign = TextAlign.Center)
