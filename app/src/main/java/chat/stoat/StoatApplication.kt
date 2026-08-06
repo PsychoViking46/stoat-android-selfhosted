@@ -6,12 +6,15 @@ import android.os.Build
 import android.os.StrictMode
 import chat.stoat.di.appModule
 import chat.stoat.di.viewModelModule
+import chat.stoat.persistence.KVStorage
+import chat.stoat.persistence.loadCustomInstance
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import coil3.request.crossfade
 import com.google.android.material.color.DynamicColors
 import io.livekit.android.LiveKit
 import io.livekit.android.util.LoggingLevel
+import kotlinx.coroutines.runBlocking
 import logcat.AndroidLogcatLogger
 import logcat.LogPriority
 import org.koin.android.ext.koin.androidContext
@@ -26,6 +29,12 @@ class StoatApplication : Application(), SingletonImageLoader.Factory {
     override fun onCreate() {
         super.onCreate()
         AndroidLogcatLogger.installOnDebuggableApp(this, minPriority = LogPriority.VERBOSE)
+
+        // Must happen before anything touches the network - STOAT_BASE etc. are read fresh on
+        // every request, so this just needs to run once, early, synchronously.
+        runBlocking {
+            loadCustomInstance(KVStorage(this@StoatApplication))
+        }
 
         if (BuildConfig.DEBUG) {
             LiveKit.loggingLevel = LoggingLevel.DEBUG
