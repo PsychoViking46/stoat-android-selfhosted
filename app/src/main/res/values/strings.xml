@@ -464,6 +464,10 @@
     <string name="channel_context_sheet_actions_copy_id">Copy ID</string>
     <string name="channel_context_sheet_actions_copy_id_copied">Copied channel ID to clipboard</string>
     <string name="channel_context_sheet_actions_mark_read">Mark as read</string>
+    <string name="channel_context_sheet_actions_notify_all">Notify for all messages</string>
+    <string name="channel_context_sheet_actions_notify_all_enabled">You\'ll be notified for every message in this channel</string>
+    <string name="channel_context_sheet_actions_notify_default">Use default notifications</string>
+    <string name="channel_context_sheet_actions_notify_default_enabled">Notifications reset to default (mentions only) for this channel</string>
 
     <string name="server_context_sheet_description_empty">There hasn\'t been a description set for this server yet.</string>
 

@@ -148,6 +148,23 @@ suspend fun ackChannel(channelId: String, messageId: String = ULID.makeNext()) {
     StoatHttp.put("/channels/$channelId/ack/$messageId".api())
 }
 
+@kotlinx.serialization.Serializable
+data class SetChannelNotificationLevelBody(
+    val level: String? = null
+)
+
+/**
+ * Set (or clear, by passing null) this user's own notification level
+ * override for a channel. Set [level] to "all" to be notified of every
+ * message in the channel, not just @mentions.
+ */
+suspend fun setChannelNotificationLevel(channelId: String, level: String?) {
+    StoatHttp.put("/channels/$channelId/notifications".api()) {
+        contentType(ContentType.Application.Json)
+        setBody(SetChannelNotificationLevelBody(level = level))
+    }
+}
+
 suspend fun fetchSingleChannel(channelId: String): Channel {
     val response = StoatHttp.get("/channels/$channelId".api())
         .bodyAsText()
