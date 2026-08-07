@@ -72,8 +72,23 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            val ksPropsFile = rootProject.file("keystore.properties")
+            if (ksPropsFile.exists()) {
+                val ksProps = Properties()
+                ksProps.load(FileInputStream(ksPropsFile))
+                storeFile = rootProject.file(ksProps.getProperty("storeFile"))
+                storePassword = ksProps.getProperty("storePassword")
+                keyAlias = ksProps.getProperty("keyAlias")
+                keyPassword = ksProps.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
