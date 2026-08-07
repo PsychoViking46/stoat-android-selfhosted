@@ -21,6 +21,28 @@
 > implementation. Defaults to the official instance until a user opts in. Not affiliated with or
 > endorsed by the Stoat project.
 
+## Notify for all messages in a channel
+
+By default, Stoat only pushes/notifies you for DMs and @mentions - a regular
+message in a shared channel never triggers a notification, on the official
+app or this fork alike. This fork adds an opt-in per-channel override: open
+a channel's context menu and choose **"Notify for all messages"** to be
+notified for every message there, or **"Use default notifications"** to go
+back to mentions-only.
+
+This needs a matching backend change to actually take effect - it won't do
+anything against the official stoat.chat servers, or any self-hosted
+instance that hasn't applied the same patch. See
+[`PsychoViking46/stoatchat`](https://github.com/PsychoViking46/stoatchat),
+branch `add-per-channel-notify-all` (based on the `v0.14.3` tag), which adds:
+
+- A `notification_level` field on the per-user, per-channel unread record
+- A new `PUT /channels/<id>/notifications` endpoint to set/clear it
+  (`{"level": "all"}` or `{"level": null}`)
+- The corresponding change to the message-send push logic, so a channel
+  member with `"all"` set gets pushed for every message there, on top of
+  the existing DM/mention/mass-mention triggers (which are unchanged)
+
 ## Setting up push notifications for your own instance
 
 Push notifications work end-to-end in the release build, but they're tied to
