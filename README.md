@@ -21,6 +21,52 @@
 > implementation. Defaults to the official instance until a user opts in. Not affiliated with or
 > endorsed by the Stoat project.
 
+## Setting up push notifications for your own instance
+
+Push notifications work end-to-end in the release build, but they're tied to
+the Firebase project that build was compiled against. If you're running your
+own self-hosted Stoat server, everything else (messaging, voice, etc.) works
+immediately - push just won't be delivered until you set up your own
+Firebase project and point both this app and your server's `pushd` at it.
+None of this costs anything (Firebase's free tier covers this comfortably).
+
+1. **Create a Firebase project** at [console.firebase.google.com](https://console.firebase.google.com) -
+   name doesn't matter, disable Google Analytics (not needed).
+2. **Register the Android app** in it with package name `chat.revolt` (or
+   `chat.revolt.debug` if you only want push on debug builds), download the
+   resulting `google-services.json`, and drop it into `app/google-services.json`
+   before building.
+3. **Enable the Firebase Cloud Messaging API** for the project in
+   [Google Cloud Console](https://console.cloud.google.com) (APIs & Services
+   → Library) - this isn't always on by default and sends will fail with a
+   403 until it is.
+4. **Generate a service-account key**: Project settings → Service accounts →
+   Generate new private key. Treat this file as a secret - it's admin-level
+   credentials for sending push through your project, not something to
+   commit or share.
+5. **Configure your server's `pushd`**: add a `[pushd.fcm]` section to your
+   self-hosted instance's `Revolt.toml` with the fields from that
+   service-account JSON:
+   ```toml
+   [pushd.fcm]
+   queue = "notifications.outbound.fcm"
+   key_type = "service_account"
+   project_id = "<from the JSON>"
+   private_key_id = "<from the JSON>"
+   private_key = "<from the JSON>"
+   client_email = "<from the JSON>"
+   client_id = "<from the JSON>"
+   auth_uri = "https://accounts.google.com/o/oauth2/auth"
+   token_uri = "https://oauth2.googleapis.com/token"
+   auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
+   client_x509_cert_url = "<from the JSON>"
+   ```
+   Restart `pushd` after adding this. Nothing else in your stack needs to
+   change.
+6. **Build your own release APK** with the real `google-services.json` in
+   place (see Quick Start below) and install it in place of this repo's
+   prebuilt one.
+
 ## Description
 
 The codebase includes the app itself, as well as an internal library for interacting with the Stoat
