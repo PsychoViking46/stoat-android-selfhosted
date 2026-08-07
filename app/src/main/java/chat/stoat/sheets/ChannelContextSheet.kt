@@ -19,6 +19,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import chat.stoat.R
 import chat.stoat.api.StoatAPI
+import chat.stoat.api.routes.channel.setChannelNotificationLevel
 import chat.stoat.composables.generic.SheetButton
 
 import chat.stoat.internals.Platform
@@ -91,6 +92,60 @@ fun ChannelContextSheet(channelId: String, onHideSheet: suspend () -> Unit) {
                 channel.lastMessageID?.let {
                     StoatAPI.unreads.markAsRead(channelId, it, sync = true)
                 }
+                onHideSheet()
+            }
+        }
+    )
+
+    SheetButton(
+        headlineContent = {
+            Text(
+                text = stringResource(id = R.string.channel_context_sheet_actions_notify_all),
+            )
+        },
+        leadingContent = {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_notifications_24dp),
+                contentDescription = null
+            )
+        },
+        onClick = {
+            coroutineScope.launch {
+                runCatching { setChannelNotificationLevel(channelId, "all") }
+                    .onSuccess {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.channel_context_sheet_actions_notify_all_enabled),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                onHideSheet()
+            }
+        }
+    )
+
+    SheetButton(
+        headlineContent = {
+            Text(
+                text = stringResource(id = R.string.channel_context_sheet_actions_notify_default),
+            )
+        },
+        leadingContent = {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_notification_settings_24dp),
+                contentDescription = null
+            )
+        },
+        onClick = {
+            coroutineScope.launch {
+                runCatching { setChannelNotificationLevel(channelId, null) }
+                    .onSuccess {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.channel_context_sheet_actions_notify_default_enabled),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 onHideSheet()
             }
         }
