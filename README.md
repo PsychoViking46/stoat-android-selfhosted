@@ -32,9 +32,8 @@ None of this costs anything (Firebase's free tier covers this comfortably).
 
 1. **Create a Firebase project** at [console.firebase.google.com](https://console.firebase.google.com) -
    name doesn't matter, disable Google Analytics (not needed).
-2. **Register the Android app** in it with package name `chat.revolt` (or
-   `chat.revolt.debug` if you only want push on debug builds), download the
-   resulting `google-services.json`, and drop it into `app/google-services.json`
+2. **Register the Android app** in it with package name `chat.revolt`,
+   download the resulting `google-services.json`, and drop it into `app/google-services.json`
    before building.
 3. **Enable the Firebase Cloud Messaging API** for the project in
    [Google Cloud Console](https://console.cloud.google.com) (APIs & Services
