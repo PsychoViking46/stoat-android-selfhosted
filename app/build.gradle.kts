@@ -66,6 +66,13 @@ android {
         versionCode = Integer.parseInt("001_008_001".replace("_", ""), 10)
         versionName = "1.8.1"
 
+        // Optional extra App Links host for a self-hosted instance, e.g. "stoat.example.com".
+        // Set via stoatbuild.properties (gitignored, never committed) or the RVX_APPLINK_HOST
+        // env var. Falls back to a harmless, non-resolving placeholder host so a plain build
+        // from public source doesn't claim any real domain.
+        manifestPlaceholders["selfHostedAppLinkHost"] =
+            buildproperty("applinks.selfhosted_host", "RVX_APPLINK_HOST") ?: "unset.invalid"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
