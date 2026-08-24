@@ -63,8 +63,8 @@ android {
         applicationId = "chat.revolt"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = Integer.parseInt("001_007_003".replace("_", ""), 10)
-        versionName = "1.7.3"
+        versionCode = Integer.parseInt("001_007_004".replace("_", ""), 10)
+        versionName = "1.7.4"
 
         // Optional extra App Links host for a self-hosted instance, e.g. "stoat.example.com".
         // Set via stoatbuild.properties (gitignored, never committed) or the RVX_APPLINK_HOST
