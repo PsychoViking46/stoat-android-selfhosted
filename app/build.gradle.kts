@@ -63,8 +63,8 @@ android {
         applicationId = "chat.revolt"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = Integer.parseInt("001_007_004".replace("_", ""), 10)
-        versionName = "1.7.4"
+        versionCode = Integer.parseInt("001_007_005".replace("_", ""), 10)
+        versionName = "1.7.5"
 
         // Optional extra App Links host for a self-hosted instance, e.g. "stoat.example.com".
         // Set via stoatbuild.properties (gitignored, never committed) or the RVX_APPLINK_HOST
@@ -72,6 +72,15 @@ android {
         // from public source doesn't claim any real domain.
         manifestPlaceholders["selfHostedAppLinkHost"] =
             buildproperty("applinks.selfhosted_host", "RVX_APPLINK_HOST") ?: "unset.invalid"
+
+        // Same host as above: if set, a fresh install connects to this self-hosted server
+        // automatically on first launch instead of the official server, unless the user has
+        // already made an explicit connect/reset choice of their own.
+        buildConfigField(
+            "String",
+            "DEFAULT_SELFHOSTED_SERVER",
+            "\"${buildproperty("applinks.selfhosted_host", "RVX_APPLINK_HOST") ?: ""}\""
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
