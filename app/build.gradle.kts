@@ -73,6 +73,15 @@ android {
         manifestPlaceholders["selfHostedAppLinkHost"] =
             buildproperty("applinks.selfhosted_host", "RVX_APPLINK_HOST") ?: "unset.invalid"
 
+        // Same host as above: if set, a fresh install connects to this self-hosted server
+        // automatically on first launch instead of the official server, unless the user has
+        // already made an explicit connect/reset choice of their own.
+        buildConfigField(
+            "String",
+            "DEFAULT_SELFHOSTED_SERVER",
+            "\"${buildproperty("applinks.selfhosted_host", "RVX_APPLINK_HOST") ?: ""}\""
+        )
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true

@@ -1,5 +1,6 @@
 package chat.stoat.persistence
 
+import chat.stoat.BuildConfig
 import chat.stoat.api.StoatHttp
 import chat.stoat.api.routes.misc.getRootRoute
 import chat.stoat.core.model.data.OFFICIAL_STOAT_BASE
@@ -22,6 +23,7 @@ private const val KEY_PROXY = "customInstance.proxy"
 private const val KEY_WEB_APP = "customInstance.webApp"
 private const val KEY_WEBSOCKET = "customInstance.websocket"
 private const val KEY_DOMAIN = "customInstance.domain" // display-only, what the user typed in
+private const val KEY_USER_HAS_CHOSEN = "customInstance.userHasChosen"
 
 @Serializable
 data class StoatWellKnown(val api: String)
@@ -33,7 +35,19 @@ data class StoatWellKnown(val api: String)
  * re-request in-flight work if this runs late.
  */
 suspend fun loadCustomInstance(kvStorage: KVStorage) {
-    val base = kvStorage.get(KEY_BASE) ?: return
+    val base = kvStorage.get(KEY_BASE)
+    if (base == null) {
+        // No saved instance yet. If this build has a default self-hosted server baked in and
+        // the user hasn't explicitly connected or reset elsewhere before, connect to it now so
+        // a fresh install lands on the right server with zero setup. Failure (e.g. no network
+        // yet) intentionally leaves KEY_USER_HAS_CHOSEN unset, so this retries on next launch
+        // rather than getting stuck on the official server.
+        val defaultServer = BuildConfig.DEFAULT_SELFHOSTED_SERVER
+        if (defaultServer.isNotBlank() && kvStorage.get(KEY_USER_HAS_CHOSEN) == null) {
+            runCatching { connectToCustomInstance(kvStorage, defaultServer) }
+        }
+        return
+    }
     STOAT_BASE = base
     STOAT_FILES = kvStorage.get(KEY_FILES) ?: STOAT_FILES
     STOAT_PROXY = kvStorage.get(KEY_PROXY) ?: STOAT_PROXY
@@ -52,6 +66,7 @@ suspend fun resetToOfficialInstance(kvStorage: KVStorage) {
     kvStorage.remove(KEY_WEB_APP)
     kvStorage.remove(KEY_WEBSOCKET)
     kvStorage.remove(KEY_DOMAIN)
+    kvStorage.set(KEY_USER_HAS_CHOSEN, "true")
 
     STOAT_BASE = OFFICIAL_STOAT_BASE
     STOAT_FILES = OFFICIAL_STOAT_FILES
@@ -105,6 +120,7 @@ suspend fun connectToCustomInstance(kvStorage: KVStorage, domainInput: String) {
         kvStorage.set(KEY_WEB_APP, STOAT_WEB_APP)
         kvStorage.set(KEY_WEBSOCKET, STOAT_WEBSOCKET)
         kvStorage.set(KEY_DOMAIN, domain)
+        kvStorage.set(KEY_USER_HAS_CHOSEN, "true")
     } catch (e: Exception) {
         STOAT_BASE = previousBase
         STOAT_FILES = previousFiles
