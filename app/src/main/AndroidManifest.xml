@@ -97,6 +97,7 @@
 
                 <data android:scheme="https" />
                 <data android:host="stoat.chat" />
+                <data android:host="${selfHostedAppLinkHost}" />
                 <data android:pathPattern="/channel/.........................." />
                 <data android:pathPattern="/channel/........................../.........................." />
                 <data android:pathPattern="/server/.........................." />
@@ -151,6 +152,7 @@
                 <data android:scheme="https" />
 
                 <data android:host="stoat.chat" />
+                <data android:host="${selfHostedAppLinkHost}" />
 
                 <data android:pathPrefix="/invite/" />
             </intent-filter>

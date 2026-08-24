@@ -2,3 +2,6 @@ sentry.dsn=
 sentry.upload_mappings=true
 build.debug.app_name=
 build.flavour_id=ZZUU
+# Optional: your self-hosted domain, so links to it open in the app (App Links).
+# Leave blank/unset for a build with no self-hosted host claimed.
+applinks.selfhosted_host=
