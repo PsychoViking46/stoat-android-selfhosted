@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.sp
 import chat.stoat.R
 import chat.stoat.api.StoatAPI
 import chat.stoat.api.routes.channel.createInvite
-import chat.stoat.core.model.data.STOAT_INVITES
+import chat.stoat.core.model.data.STOAT_WEB_APP
 import chat.stoat.internals.Platform
 import chat.stoat.ui.theme.FragmentMono
 import kotlinx.coroutines.CancellationException
@@ -143,7 +143,7 @@ fun InviteDialog(channelId: String, onDismissRequest: () -> Unit) {
             Spacer(Modifier.height(16.dp))
 
             Text(
-                (Uri.parse(STOAT_INVITES).host ?: "rvlt.gg") + "/",
+                (Uri.parse(STOAT_WEB_APP).host ?: "rvlt.gg") + "/invite/",
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -206,8 +206,8 @@ fun InviteDialog(channelId: String, onDismissRequest: () -> Unit) {
                 Spacer(Modifier.width(8.dp))
                 Button(onClick = {
                     clipboardManager.setText(AnnotatedString.Builder().apply {
-                        append(STOAT_INVITES)
-                        append("/")
+                        append(STOAT_WEB_APP)
+                        append("/invite/")
                         append(inviteCode)
                     }.toAnnotatedString())
 
