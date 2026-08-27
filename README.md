@@ -88,6 +88,31 @@ None of this costs anything (Firebase's free tier covers this comfortably).
    place (see Quick Start below) and install it in place of this repo's
    prebuilt one.
 
+## Self-signed / internally-signed certificates
+
+If your self-hosted instance uses a certificate from your own internal CA
+(or a self-signed one) rather than one from a public CA like Let's Encrypt,
+the app will refuse to connect out of the box - Android apps targeting API
+24+ don't trust user-installed certificates by default. This fork adds a
+`network_security_config.xml` `base-config` that trusts the device's
+`system` **and** `user` certificate stores, so it'll work once you've
+installed your CA (or the server's own cert) as a trusted certificate on
+the device (Settings → Security → Encryption & credentials → Install a
+certificate, wording varies by Android version/OEM).
+
+**Worth understanding before you rely on this:** trusting `user` certs is a
+device-wide, app-wide setting, not scoped to just your server. Android
+disables it by default specifically to prevent MITM attacks - e.g. a
+malicious "sign in for free WiFi" captive portal getting a user to install
+a rogue cert, or a compromised MDM/work profile. Turning it back on here
+means that if a rogue CA ever lands in your device's trusted store for any
+reason, this app would trust connections through it too, not just for your
+own server. This is scoped to `base-config` only, so it does *not* weaken
+the pinned certificate trust used for `stoatusercontent.com` (the CDN
+domain keeps its own separate, pinned trust-anchors). If you're not
+deliberately running your own CA/self-signed cert, there's no need to
+install anything and this doesn't change your risk at all.
+
 ## Description
 
 The codebase includes the app itself, as well as an internal library for interacting with the Stoat
