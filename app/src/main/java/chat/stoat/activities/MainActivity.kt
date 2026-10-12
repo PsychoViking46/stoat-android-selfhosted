@@ -1,7 +1,10 @@
 package chat.stoat.activities
 
 import android.content.Context
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
@@ -15,6 +18,7 @@ import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
@@ -377,9 +381,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Android 17+ blocks connections to LAN addresses without this runtime permission, which
+    // breaks self-hosted servers reached over the local network. Reconnect once it is granted.
+    private val localNetworkPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (granted) recreate()
+        }
+
+    private fun requestLocalNetworkPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT < 37) return
+        val permission = Manifest.permission.ACCESS_LOCAL_NETWORK
+        if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+            localNetworkPermissionLauncher.launch(permission)
+        }
+    }
+
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        requestLocalNetworkPermissionIfNeeded()
 
         SentryAndroid.init(this) { options ->
             options.dsn = BuildConfig.SENTRY_DSN
