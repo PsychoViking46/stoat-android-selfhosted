@@ -71,7 +71,7 @@ import chat.stoat.api.routes.invites.fetchServerInvites
 import chat.stoat.api.routes.user.fetchUser
 import chat.stoat.composables.generic.UserAvatar
 import chat.stoat.composables.settings.ServerSettingsEmptyState
-import chat.stoat.core.model.data.STOAT_INVITES
+import chat.stoat.core.model.data.STOAT_WEB_APP
 import chat.stoat.core.model.schemas.Channel
 import chat.stoat.core.model.schemas.ChannelType
 import chat.stoat.core.model.schemas.Server
@@ -90,8 +90,8 @@ import kotlinx.coroutines.sync.withPermit
 import org.koin.androidx.compose.koinViewModel
 
 internal fun inviteLink(code: String, compact: Boolean = false): String =
-    if (compact) "${STOAT_INVITES.toUri().host}/$code"
-    else "$STOAT_INVITES/$code"
+    if (compact) "${STOAT_WEB_APP.toUri().host}/invite/$code"
+    else "$STOAT_WEB_APP/invite/$code"
 
 
 internal fun availableInviteChannels(
