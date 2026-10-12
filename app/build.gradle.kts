@@ -62,7 +62,10 @@ android {
     defaultConfig {
         applicationId = "chat.revolt"
         minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
+        // Self-hosted builds stay on target SDK 36: from 37, Android 17's local network
+        // protection blocks connections to LAN addresses (e.g. a home server reached via a
+        // local DNS record) unless ACCESS_LOCAL_NETWORK is granted, so the app silently times out.
+        targetSdk = 36
         versionCode = Integer.parseInt("001_008_001".replace("_", ""), 10)
         versionName = "1.8.1"
 
